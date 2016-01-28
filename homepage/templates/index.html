@@ -1,0 +1,261 @@
+<%inherit file="base.htm" />
+
+<%block name="content">
+<!-- Weather/Greeting -->
+<div class="section1">
+  <div class="my_container col-sm-12 col-md-12 col-lg-12">
+<!-- Div for Google Calendar -->
+    <div class="col-sm-3 col-md-3 col-lg-3" id="calendar_div">
+      <script type="text/javascript">
+        // Your Client ID can be retrieved from your project in the Google
+        // Developer Console, https://console.developers.google.com
+        var CLIENT_ID = '124147417835-dhse39i0se1jmtuojn1lagthpvr7v0b0.apps.googleusercontent.com';
+
+        var SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
+
+        /**
+         * Check if current user has authorized this application.
+         */
+        function checkAuth() {
+          gapi.auth.authorize(
+            {
+              'client_id': CLIENT_ID,
+              'scope': SCOPES.join(' '),
+              'immediate': true
+            }, handleAuthResult);
+        }
+
+        /**
+         * Handle response from authorization server.
+         *
+         * @param {Object} authResult Authorization result.
+         */
+        function handleAuthResult(authResult) {
+          var authorizeDiv = document.getElementById('authorize-div');
+          if (authResult && !authResult.error) {
+            // Hide auth UI, then load client library.
+            authorizeDiv.style.display = 'none';
+            loadCalendarApi();
+          } else {
+            // Show auth UI, allowing the user to initiate authorization by
+            // clicking authorize button.
+            authorizeDiv.style.display = 'inline';
+          }
+        }
+
+        /**
+         * Initiate auth flow in response to user clicking authorize button.
+         *
+         * @param {Event} event Button click event.
+         */
+        function handleAuthClick(event) {
+          gapi.auth.authorize(
+            {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
+            handleAuthResult);
+          return false;
+        }
+
+        ///////////Timer for loadCalendarApi
+        setInterval(function timer(){
+          // var old = document.getElementById('event').remove();
+          // old.parentNode.removeChild(old);
+          $('#output').remove();
+          $('#gcal').append("<tbody id='output'></tbody>");
+          loadCalendarApi()
+        }, 43200000);
+
+        /**
+         * Load Google Calendar client library. List upcoming events
+         * once client library is loaded.
+         */
+        function loadCalendarApi() {
+          gapi.client.load('calendar', 'v3', listUpcomingEvents);
+        }
+
+        /**
+         * Print the summary and start datetime/date of the next ten events in
+         * the authorized user's calendar. If no events are found an
+         * appropriate message is printed.
+         */
+        function listUpcomingEvents() {
+          var request = gapi.client.calendar.events.list({
+            'calendarId': 'primary',
+            'timeMin': (new Date()).toISOString(),
+            'startTime':'startTime',
+            'showDeleted': false,
+            'singleEvents': true,
+            'maxResults': 10,
+            'orderBy': 'startTime'
+          });
+
+          //console.log(request)
+
+          request.execute(function(resp) {
+            var events = resp.items;
+            //appendPre('Upcoming events:');
+            //console.log(events)
+
+            if (events.length > 0) {
+              for (i = 0; i < events.length; i++) {
+                var event = events[i];
+                var when = event.start.dateTime;
+                var time = when.substr(11, 5);
+                //console.log(when)
+                var d = new Date(when);
+                when = d.toLocaleDateString();
+                if (!when) {
+                  when = event.start.date;
+                }
+                //console.log(event.summary)
+                // appendPre(event.summary + ' (' + when + ')')
+                appendPre(event.summary, when, time)
+              }
+            } else {
+              appendPre('No upcoming events found.');
+            }
+
+          });
+        }
+
+        /**
+         * Append a pre element to the body containing the given message
+         * as its text node.
+         *
+         * @param {string} message Text to be placed in pre element.
+         */
+        function appendPre(message, when, time) {
+          var pre = document.getElementById('output');
+          var textContent = document.createTextNode(message + '\n');
+          // pre.appendChild(textContent);
+          var newdiv = document.createElement('tr');
+          var divId = 'event';
+          newdiv.setAttribute('id', divId);
+          newdiv.innerHTML = "<td id='name'>" + message + '</td>' + "<td id='date'>" + when + '</td>' + "<td id='time'>" + time + '</td>'
+          pre.appendChild(newdiv)
+        }
+
+        function speak() {
+          // responsiveVoice.setDefaultVoice("UK English Male");
+          // evnt = $('#test').val();
+          // console.log($('#test').val())
+          name = $('#name:first').text()
+          date = $('#date:first').text()
+          time = $('#time:first').text()
+          // responsiveVoice.speak(name + date + time, "UK English Male", {pitch: -2});
+          responsiveVoice.speak("Your first event is " + name, "UK English Male", {pitch: -2});
+
+
+          var event_date = new Date(date),
+            // locale = "en-us",
+            // month = event_date.toLocaleString(locale, { month: "long" });
+            month = event_date.toString();
+          console.log(event_date)
+          // var date = event_date.substr(0, 16);
+          var date = month.substr(0, 16);
+          console.log(date)
+
+          responsiveVoice.speak("The date of your event is " + date, "UK English Male", {pitch: -2});
+          responsiveVoice.speak("It starts at " + time, "UK English Male", {pitch: -2});
+
+          // Maybe use to determine date?
+          var d = new Date();
+          var month = d.getMonth()+1;
+          var day = d.getDate();
+          var year = d.getFullYear();
+
+          // var voicelist = responsiveVoice.getVoices();
+          // console.log(voicelist)
+        }
+      </script>
+      <script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
+<!-- Google Authorization -->
+      <div id="authorize-div" style="display: none">
+        <span>Authorize access to Google Calendar API</span>
+        <!--Button for the user to click to initiate auth sequence -->
+        <button id="authorize-button" onclick="handleAuthClick(event)">
+          Authorize
+        </button>
+      </div>
+<!-- Google Calendar Table -->
+      <h1 class="text-center" id="test">Upcoming Events</h1>
+      <table class="table table-hover" id="gcal">
+        <thead class="text-center">
+          <tr>
+            <th>Event Name</th>
+            <th>Start Date</th>
+            <th>Start Time</th>
+          </tr>
+        </thead>
+        <tbody id="output" class="text-left">
+        </tbody>
+      </table>
+    </div>
+<!-- RSS Feed -->
+    <div class="col-sm-3 col-md-3 col-lg-3 rss" id="rss_div">
+      <!-- start feedwind code -->
+        <iframe  height="400"  width="300" src="http://feed.mikle.com/widget/?rssmikle_url=http%3A%2F%2Frss.cnn.com%2Frss%2Fcnn_topstories.rss&rssmikle_frame_width=300&rssmikle_frame_height=400&frame_height_by_article=0&rssmikle_target=_blank&rssmikle_font=Arial%2C%20Helvetica%2C%20sans-serif&rssmikle_font_size=12&rssmikle_border=off&responsive=off&text_align=left&text_align2=left&corner=off&scrollbar=on&autoscroll=on_mc&scrolldirection=up&scrollstep=3&mcspeed=50&sort=Off&rssmikle_title=on&rssmikle_title_bgcolor=%230066FF&rssmikle_title_color=%23FFFFFF&rssmikle_item_bgcolor=%23FFFFFF&rssmikle_item_title_length=55&rssmikle_item_title_color=%230066FF&rssmikle_item_border_bottom=on&rssmikle_item_description=on&item_link=off&rssmikle_item_description_length=150&rssmikle_item_description_color=%23666666&rssmikle_item_date=gl1&rssmikle_timezone=Etc%2FGMT&datetime_format=%25b%20%25e%2C%20%25Y%20%25l%3A%25M%20%25p&item_description_style=text&item_thumbnail=full&item_thumbnail_selection=auto&article_num=15&rssmikle_item_podcast=off&"
+          scrolling="no" name="rssmikle_frame" marginwidth="0" marginheight="0" vspace="0" hspace="0" frameborder="0">
+        </iframe>
+        <div >
+          <a href="http://feed.mikle.com/" target="_blank" style="color:#CCCCCC;">RSS Feed Widget</a>
+          <!--Please display the above link in your web page according to Terms of Service.-->
+        </div>
+        <!-- end feedwind code --><!--  end  feedwind code -->
+    </div>
+<!-- Show Alfred's Commands -->
+    <div class="col-sm-3 col-md-3 col-lg-3" id="commands">
+      <table class="table table-hover">
+        <thead class="text-center">
+          <h2>Command List</h2>
+        </thead>
+        <tbody class="text-left">
+          <tr>
+            <td>Hello</td>
+            <td>Who are you?</td>
+          </tr>
+          <tr>
+            <td>Show calendar</td>
+            <td>Hide calendar</td>
+          </tr>
+          <tr>
+            <td>Show news</td>
+            <td>Hide news</td>
+          </tr>
+          <tr>
+            <td>Show commands</td>
+            <td>Hide commands</td>
+          </tr>
+          <tr>
+            <td>What is on my calendar?</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- Weather Widget -->
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-right" id="weather">
+      <div id="django-time">
+        <h2>${time}</h2>
+        <h3>${date}</h3>
+      </div>
+      <div id="weather_body"><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/93/loader.gif" alt="Loading..." class="loading"><br />Loading...
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Stock Ticker -->
+<div class="section3">
+  <div id="Stocks">
+    <span class="Symbol">
+      <b class="Stat"><i data-replace='Symbol'>PWR</i>:<i data-replace='StockExchange'>NYSE</i></b>
+      <b class="Label">( <i data-replace='Name'>Quanta Services</i> )</b>
+    </span>
+    <span class="Price"><b class="Label">Last Price</b> <b class="Stat">$<i data-replace='Bid'></i></b></span>
+    <span class="Change"><b class="Label">Change</b> <b class="Stat"><i data-replace='Change'></i></b> <b class="Stat">(<i data-replace='ChangeinPercent'></i>)</b></span>
+    <span class="Volume"><b class="Label">Volume</b> <b class="Stat" data-replace='Volume'></b></span>
+    <span class="MarketCapitalization"><b class="Label">Mkt Cap</b> <b class="Stat">$<i data-replace="MarketCapitalization"></i></b></span>
+    <span class="LastUpdated"><b class="Label">Last Trade</b> <b class="Stat"><i data-replace='LastTradeDate'></i> <i data-replace="LastTradeTime"></i> </b></span>
+  </div>
+</div>
+
+</%block>

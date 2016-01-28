@@ -1,0 +1,32 @@
+body {
+  background-color: black;
+  color: white;
+}
+
+.my_container {
+  padding: 25px;
+}
+
+.section1 {
+  height: 50em;
+}
+.rss {
+  margin-top: 20px;
+}
+.section2 {
+  background-color: white;
+  height: 3em;
+}
+.section3 {
+  height: 25em;
+}
+
+ul {
+  list-style: none;
+  columns: 2;
+  -webkit-columns: 2;
+  -moz-columns: 2;
+}
+#commands{
+  margin-top: 20px;
+}
