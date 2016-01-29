@@ -53,7 +53,6 @@ window.onload = function(){
               // responsiveVoice.speak(name + date + time, "UK English Male", {pitch: -2});
               responsiveVoice.speak("Your first event is " + name, "UK English Male", {pitch: -2});
 
-
               var event_date = new Date(date),
                 // locale = "en-us",
                 // month = event_date.toLocaleString(locale, { month: "long" });
