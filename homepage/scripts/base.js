@@ -1,7 +1,6 @@
 $(document).ready(function() {
   //Hide RSS feed by default
   $('#rss_div').hide();
-  $('#calendar_div').hide();
   $('#commands').hide();
 
   setInterval(function ajax(){
@@ -23,7 +22,6 @@ $(document).ready(function() {
   }, 15000);
 });
 window.onload = function(){
-    console.log("annyang")
     if (annyang) {
         var commands = {
             'Hello': function() {
@@ -89,5 +87,7 @@ window.onload = function(){
         };
         annyang.addCommands(commands);
         annyang.start();
+        responsiveVoice.speak("I have loaded", "UK English Male", {pitch: -2});
+
     }
 }
