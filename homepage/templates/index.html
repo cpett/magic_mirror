@@ -5,7 +5,7 @@
 <div class="section1">
   <div class="my_container col-sm-12 col-md-12 col-lg-12">
 <!-- Div for Google Calendar -->
-    <div class="col-sm-3 col-md-3 col-lg-3" id="calendar_div">
+    <div class="col-sm-6 col-md-3 col-lg-3" id="calendar_div">
       <script type="text/javascript">
         // Your Client ID can be retrieved from your project in the Google
         // Developer Console, https://console.developers.google.com
@@ -35,6 +35,7 @@
           if (authResult && !authResult.error) {
             // Hide auth UI, then load client library.
             authorizeDiv.style.display = 'none';
+            $('.section2').hide();
             loadCalendarApi();
           } else {
             // Show auth UI, allowing the user to initiate authorization by
@@ -99,9 +100,13 @@
               for (i = 0; i < events.length; i++) {
                 var event = events[i];
                 var when = event.start.dateTime;
-                var time = when.substr(11, 5);
-                //console.log(when)
+                // var time = when.substr(13, 3);
+                //
+                // //console.log(when)
                 var d = new Date(when);
+                // var time_12 = hours12(d)
+                // time = time_12 + time
+                var time = formatAMPM(d)
                 when = d.toLocaleDateString();
                 if (!when) {
                   when = event.start.date;
@@ -115,6 +120,18 @@
             }
 
           });
+          function hours12(date) { return (date.getHours() + 24) % 12 || 12; }
+
+          function formatAMPM(date) {
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0'+minutes : minutes;
+            var strTime = hours + ':' + minutes + ' ' + ampm;
+            return strTime;
+          }
         }
 
         /**
@@ -133,49 +150,8 @@
           newdiv.innerHTML = "<td id='name'>" + message + '</td>' + "<td id='date'>" + when + '</td>' + "<td id='time'>" + time + '</td>'
           pre.appendChild(newdiv)
         }
-
-        function speak() {
-          // responsiveVoice.setDefaultVoice("UK English Male");
-          // evnt = $('#test').val();
-          // console.log($('#test').val())
-          name = $('#name:first').text()
-          date = $('#date:first').text()
-          time = $('#time:first').text()
-          // responsiveVoice.speak(name + date + time, "UK English Male", {pitch: -2});
-          responsiveVoice.speak("Your first event is " + name, "UK English Male", {pitch: -2});
-
-
-          var event_date = new Date(date),
-            // locale = "en-us",
-            // month = event_date.toLocaleString(locale, { month: "long" });
-            month = event_date.toString();
-          console.log(event_date)
-          // var date = event_date.substr(0, 16);
-          var date = month.substr(0, 16);
-          console.log(date)
-
-          responsiveVoice.speak("The date of your event is " + date, "UK English Male", {pitch: -2});
-          responsiveVoice.speak("It starts at " + time, "UK English Male", {pitch: -2});
-
-          // Maybe use to determine date?
-          var d = new Date();
-          var month = d.getMonth()+1;
-          var day = d.getDate();
-          var year = d.getFullYear();
-
-          // var voicelist = responsiveVoice.getVoices();
-          // console.log(voicelist)
-        }
       </script>
       <script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
-<!-- Google Authorization -->
-      <div id="authorize-div" style="display: none">
-        <span>Authorize access to Google Calendar API</span>
-        <!--Button for the user to click to initiate auth sequence -->
-        <button id="authorize-button" onclick="handleAuthClick(event)">
-          Authorize
-        </button>
-      </div>
 <!-- Google Calendar Table -->
       <h1 class="text-center" id="test">Upcoming Events</h1>
       <table class="table table-hover" id="gcal">
@@ -193,14 +169,15 @@
 <!-- RSS Feed -->
     <div class="col-sm-3 col-md-3 col-lg-3 rss" id="rss_div">
       <!-- start feedwind code -->
-        <iframe  height="400"  width="300" src="http://feed.mikle.com/widget/?rssmikle_url=http%3A%2F%2Frss.cnn.com%2Frss%2Fcnn_topstories.rss&rssmikle_frame_width=300&rssmikle_frame_height=400&frame_height_by_article=0&rssmikle_target=_blank&rssmikle_font=Arial%2C%20Helvetica%2C%20sans-serif&rssmikle_font_size=12&rssmikle_border=off&responsive=off&text_align=left&text_align2=left&corner=off&scrollbar=on&autoscroll=on_mc&scrolldirection=up&scrollstep=3&mcspeed=50&sort=Off&rssmikle_title=on&rssmikle_title_bgcolor=%230066FF&rssmikle_title_color=%23FFFFFF&rssmikle_item_bgcolor=%23FFFFFF&rssmikle_item_title_length=55&rssmikle_item_title_color=%230066FF&rssmikle_item_border_bottom=on&rssmikle_item_description=on&item_link=off&rssmikle_item_description_length=150&rssmikle_item_description_color=%23666666&rssmikle_item_date=gl1&rssmikle_timezone=Etc%2FGMT&datetime_format=%25b%20%25e%2C%20%25Y%20%25l%3A%25M%20%25p&item_description_style=text&item_thumbnail=full&item_thumbnail_selection=auto&article_num=15&rssmikle_item_podcast=off&"
-          scrolling="no" name="rssmikle_frame" marginwidth="0" marginheight="0" vspace="0" hspace="0" frameborder="0">
-        </iframe>
-        <div >
-          <a href="http://feed.mikle.com/" target="_blank" style="color:#CCCCCC;">RSS Feed Widget</a>
-          <!--Please display the above link in your web page according to Terms of Service.-->
-        </div>
-        <!-- end feedwind code --><!--  end  feedwind code -->
+      <iframe  height="410"  width="400"
+        src="http://feed.mikle.com/widget/?rssmikle_url=http%3A%2F%2Frss.cnn.com%2Frss%2Fcnn_topstories.rss%7Chttp%3A%2F%2Frss.cnn.com%2Frss%2Fcnn_tech.rss%7Chttp%3A%2F%2Frss.cnn.com%2Frss%2Fmoney_latest.rss&rssmikle_frame_width=400&rssmikle_frame_height=400&frame_height_by_article=0&rssmikle_target=_blank&rssmikle_font=Arial%2C%20Helvetica%2C%20sans-serif&rssmikle_font_size=12&rssmikle_border=off&responsive=off&text_align=left&text_align2=left&corner=off&scrollbar=off&autoscroll=on_mc&scrolldirection=up&scrollstep=3&mcspeed=50&sort=Off&rssmikle_title=on&rssmikle_title_sentence=News&rssmikle_title_bgcolor=%230066FF&rssmikle_title_color=%23FFFFFF&rssmikle_item_bgcolor=%23FFFFFF&rssmikle_item_title_length=55&rssmikle_item_title_color=%230066FF&rssmikle_item_border_bottom=on&rssmikle_item_description=on&item_link=off&rssmikle_item_description_length=150&rssmikle_item_description_color=%23666666&rssmikle_item_date=gl1&rssmikle_timezone=Etc%2FGMT&datetime_format=%25b%20%25e%2C%20%25Y%20%25l%3A%25M%20%25p&item_description_style=text&item_thumbnail=full&item_thumbnail_selection=auto&article_num=15&rssmikle_item_podcast=off&"
+        scrolling="no" name="rssmikle_frame" marginwidth="0" marginheight="0" vspace="0" hspace="0" frameborder="0">
+      </iframe>
+      <div style="font-size:10px; text-align:center; width:400px;">
+        <a href="http://feed.mikle.com/" target="_blank" style="color:#CCCCCC;">RSS Feed Widget</a>
+        <!--Please display the above link in your web page according to Terms of Service.-->
+      </div>
+      <!-- end feedwind code --><!--  end  feedwind code -->
     </div>
 <!-- Show Alfred's Commands -->
     <div class="col-sm-3 col-md-3 col-lg-3" id="commands">
@@ -241,6 +218,16 @@
       <div id="weather_body"><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/93/loader.gif" alt="Loading..." class="loading"><br />Loading...
       </div>
     </div>
+  </div>
+</div>
+<div class="section2 text-center" id="section2">
+  <!-- Google Authorization -->
+  <div id="authorize-div" style="display: none">
+    <span class="authorize">Authorize access to Google Calendar API</span>
+    <!--Button for the user to click to initiate auth sequence -->
+      <button class="btn btn-default auth-btn" id="authorize-button" onclick="handleAuthClick(event)">
+        Authorize
+      </button>
   </div>
 </div>
 <!-- Stock Ticker -->

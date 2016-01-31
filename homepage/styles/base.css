@@ -14,7 +14,6 @@ body {
   margin-top: 20px;
 }
 .section2 {
-  background-color: white;
   height: 3em;
 }
 .section3 {
@@ -29,4 +28,11 @@ ul {
 }
 #commands{
   margin-top: 20px;
+}
+.authorize {
+  margin-right: 15px;
+}
+.auth-btn {
+  color: black;
+  font-weight: bold;
 }
