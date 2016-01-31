@@ -31,8 +31,8 @@
     } else {
       // Show auth UI, allowing the user to initiate authorization by
       // clicking authorize button.
-      $('#myModal').modal('show');
-      $('.modal-body').text('Authorize access to your Google calendar.')
+      // $('#myModal').modal('show');
+      // $('.modal-body').text('Authorize access to your Google calendar.')
       authorizeDiv.style.display = 'inline';
     }
   }
