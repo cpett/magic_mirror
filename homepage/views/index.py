@@ -8,7 +8,7 @@ def process_request(request):
     params = {}
     date_time = datetime.now()
     date = date_time.strftime('%a, %b %d, %Y')
-    time = date_time.strftime('%H:%M')
+    time = date_time.strftime('%I:%M %p')
 
     params = {
         'date': date,
@@ -23,7 +23,7 @@ def time_ajax(request):
     params = {}
     date_time = datetime.now()
     date = date_time.strftime('%a, %b %d, %Y')
-    time = date_time.strftime('%H:%M')
+    time = date_time.strftime('%I:%M %p')
 
     params = {
         'date': date,
