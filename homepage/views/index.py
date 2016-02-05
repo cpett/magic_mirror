@@ -3,9 +3,14 @@ from django_mako_plus.controller import view_function
 from datetime import datetime
 from .. import dmp_render, dmp_render_to_response
 
+
 @view_function
 def process_request(request):
     params = {}
+
+    client_ip_address = request.META['REMOTE_ADDR']
+    print(client_ip_address)
+
     date_time = datetime.now()
     date = date_time.strftime('%a, %b %d, %Y')
     time = date_time.strftime('%I:%M %p')

@@ -31,8 +31,7 @@
     } else {
       // Show auth UI, allowing the user to initiate authorization by
       // clicking authorize button.
-      // $('#myModal').modal('show');
-      // $('.modal-body').text('Authorize access to your Google calendar.')
+      $('#myModal').modal('show');
       authorizeDiv.style.display = 'inline';
     }
   }
@@ -46,6 +45,8 @@
     gapi.auth.authorize(
       {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
       handleAuthResult);
+    $('#myModal').modal('hide');
+
     return false;
   }
 
