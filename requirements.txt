@@ -1,0 +1,7 @@
+Django==1.8.4
+django-bootstrap-pagination==1.5.1
+django-mako-plus==2.5.1
+Mako==1.0.2
+MarkupSafe==0.23
+psycopg2==2.6.1
+virtualenv==13.1.2
