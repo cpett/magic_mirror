@@ -21,33 +21,35 @@
    *
    * @param {Object} authResult Authorization result.
    */
-  function handleAuthResult(authResult) {
-    var authorizeDiv = document.getElementById('authorize-div');
-    if (authResult && !authResult.error) {
-      // Hide auth UI, then load client library.
-      authorizeDiv.style.display = 'none';
-      $('.section2').hide();
-      loadCalendarApi();
-    } else {
-      // Show auth UI, allowing the user to initiate authorization by
-      // clicking authorize button.
-      // $('#myModal').modal('show');
-      // $('.modal-body').text('Authorize access to your Google calendar.')
-      authorizeDiv.style.display = 'inline';
-    }
-  }
+   function handleAuthResult(authResult) {
+     var authorizeDiv = document.getElementById('authorize-div');
+     if (authResult && !authResult.error) {
+       // Hide auth UI, then load client library.
+       authorizeDiv.style.display = 'none';
+       $('.section2').hide();
+       loadCalendarApi();
+     } else {
+       // Show auth UI, allowing the user to initiate authorization by
+       // clicking authorize button.
+       $('#myModal').modal('show');
+       $('.section2').hide();       
+       authorizeDiv.style.display = 'inline';
+     }
+   }
 
   /**
    * Initiate auth flow in response to user clicking authorize button.
    *
    * @param {Event} event Button click event.
    */
-  function handleAuthClick(event) {
-    gapi.auth.authorize(
-      {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
-      handleAuthResult);
-    return false;
-  }
+   function handleAuthClick(event) {
+     gapi.auth.authorize(
+       {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
+       handleAuthResult);
+     $('#myModal').modal('hide');
+
+     return false;
+   }
 
   ///////////Timer for loadCalendarApi
   setInterval(function timer(){

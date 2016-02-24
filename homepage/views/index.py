@@ -9,6 +9,8 @@ def process_request(request):
     date_time = datetime.now()
     date = date_time.strftime('%a, %b %d, %Y')
     time = date_time.strftime('%I:%M %p')
+    time = str(time)
+    time = time[1:]
 
     params = {
         'date': date,
@@ -24,6 +26,8 @@ def time_ajax(request):
     date_time = datetime.now()
     date = date_time.strftime('%a, %b %d, %Y')
     time = date_time.strftime('%I:%M %p')
+    time = str(time)
+    time = time[1:]
 
     params = {
         'date': date,
