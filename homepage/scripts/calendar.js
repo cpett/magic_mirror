@@ -56,7 +56,7 @@
     $('#output').remove();
     $('#gcal').append("<tbody id='output'></tbody>");
     loadCalendarApi()
-  }, 43200000);
+  }, 1800000);
 
   /**
    * Load Google Calendar client library. List upcoming events
